@@ -47,7 +47,7 @@ lerna-debug.log*
 .tmp
 dev.sqlite
 .db
-app.example.ts
+app.ts
 
 # Runtime data
 pids
