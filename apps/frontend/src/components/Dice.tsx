@@ -1,0 +1,53 @@
+import { playSound } from "@/utils/audio";
+import { cn } from "badlib";
+import type { AnimationDefinition, Variants } from "framer-motion";
+import { motion } from "framer-motion";
+
+type DiceProps = {
+  index?: number;
+  value?: number;
+  color?: string;
+  animate?: boolean;
+  combos?: number;
+};
+
+export const Dice = ({
+  value,
+  index,
+  color = "#3f3f46",
+  animate = true,
+  combos = 0,
+}: DiceProps) => {
+  const DICE_VARIANTS: Variants = {
+    initial: { opacity: 0, scale: 0.5 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, y: -30 },
+  };
+
+  const onAnimationStart = (def: AnimationDefinition) => {
+    if (def === DICE_VARIANTS.exit) {
+      playSound("wipeDice");
+    }
+  };
+
+  return (
+    <motion.div
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={DICE_VARIANTS}
+      transition={{ duration: animate ? 0.5 : 0, delay: (index ?? 0) * 0.1 }}
+      className={cn(
+        "size-16 outline outline-transparent flex items-center justify-center",
+        {
+          "outline-blue-500": combos > 1,
+          "outline-yellow-500": combos > 2,
+        },
+      )}
+      style={{ background: color }}
+      onAnimationStart={onAnimationStart}
+    >
+      {value}
+    </motion.div>
+  );
+};
