@@ -30,6 +30,9 @@ export class Game implements GameData {
   })
   boards: GameBoard[];
 
-  @Column('int')
-  nextRoll: number;
+  @Column('varchar', { nullable: true })
+  winner: Player['id'] | null;
+
+  @Column('int', { nullable: true })
+  nextRoll: number | null;
 }

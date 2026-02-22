@@ -1,23 +1,21 @@
-import { playerAtom } from "@/atoms/player";
-import { Button } from "@/components/Button";
-import { Select } from "@/components/Select";
-import { useCreateGame } from "@/services/game";
-import { useGetAllPlayers } from "@/services/player";
-import type { PlayerData } from "@shared";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useAtom } from "jotai";
-import { useEffect, useMemo, useState } from "react";
+import { playerAtom } from '@/atoms/player';
+import { Button } from '@/components/Button';
+import { Select } from '@/components/Select';
+import { useCreateGame } from '@/services/game';
+import { useGetAllPlayers } from '@/services/player';
+import type { PlayerData } from '@shared';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useAtom } from 'jotai';
+import { useMemo, useState } from 'react';
 
-export const Route = createFileRoute("/room/")({
+export const Route = createFileRoute('/room/')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const navigate = useNavigate();
   const [player] = useAtom(playerAtom);
-  const [selectedPlayer, setSelectedPlayer] = useState<PlayerData["id"] | null>(
-    null,
-  );
+  const [selectedPlayer, setSelectedPlayer] = useState<PlayerData['id'] | null>(null);
 
   const { mutateAsync } = useCreateGame();
   const { data } = useGetAllPlayers();
@@ -39,17 +37,13 @@ function RouteComponent() {
       firstPlayerId: player.id,
       secondPlayerId: selectedPlayer,
     });
-    await navigate({ to: "/room/$roomId", params: { roomId: game.id } });
+    await navigate({ to: '/room/$roomId', params: { roomId: game.id } });
   };
 
-  useEffect(() => {
-    if (!player) navigate({ to: "/" });
-  }, []);
-
   return (
-    <div className="flex items-center justify-center h-full flex-col gap-2">
+    <div className='flex items-center justify-center h-full flex-col gap-2'>
       <Select
-        label="Выберите соперника"
+        label='Выберите соперника'
         options={playersOptions}
         onChange={setSelectedPlayer}
       />

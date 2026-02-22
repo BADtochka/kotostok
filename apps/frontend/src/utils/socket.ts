@@ -1,6 +1,11 @@
-import { io } from "socket.io-client";
+import { io } from 'socket.io-client';
 
-const URL =
-  process.env.NODE_ENV === "production" ? undefined : "http://localhost:80";
+const URL = import.meta.env.VITE_WS_URL;
 
-export const socket = io(URL);
+export const socket = io(URL, {
+  autoConnect: true,
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000,
+  transports: ['websocket'],
+});

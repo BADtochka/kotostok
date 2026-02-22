@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CreateGameDto } from './dto/CreateGame.dto';
 import { MakeTurnDto } from './dto/MakeTurn.dto';
 import { Game } from './entities/game.entity';
@@ -52,8 +59,10 @@ export class GameController {
   //   return {};
   // }
 
-  @Post('/:id/end')
-  async endGame(@Param('id') id: string): Promise<Game> {
-    return await this.gameService.endGame(id);
+  @Post('/:gameId/end')
+  async endGame(@Param('gameId') gameId: string): Promise<Game> {
+    const game = await this.gameService.getGameById(gameId);
+    if (!game) throw new NotFoundException('Room not found');
+    return await this.gameService.endGame(game);
   }
 }

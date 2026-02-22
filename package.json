@@ -2,7 +2,8 @@
   "name": "kotostok",
   "module": "index.ts",
   "devDependencies": {
-    "@types/bun": "^1.3.9"
+    "@types/bun": "^1.3.9",
+    "bun-tasks": "^0.1.2"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
@@ -11,7 +12,10 @@
   "scripts": {
     "dev:backend": "cd apps/backend && bun run start:dev",
     "dev:frontend": "cd apps/frontend && bun run dev",
-    "dev": "bun run-p -l dev:backend dev:frontend",
+    "dev": "bun-tasks dev:backend ::: dev:frontend",
+    "prod:frontend": "cd apps/frontend && bun run build && PORT=1337 bun --bun server.ts",
+    "prod:backend": "cd apps/backend && bun run build && bun run start:prod",
+    "prod": "bun-tasks prod:frontend ::: prod:backend",
     "migration": "cd apps/backend && bun migration"
   },
   "type": "module",
@@ -20,7 +24,6 @@
     "apps/*"
   ],
   "dependencies": {
-    "badlib": "^0.2.9",
-    "npm-run-all2": "^8.0.4"
+    "badlib": "^0.2.9"
   }
 }

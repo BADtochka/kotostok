@@ -1,5 +1,5 @@
-import type { PlayerData } from "./Player";
-import type { UUID } from "./UUID";
+import type { PlayerData } from './Player';
+import type { UUID } from './UUID';
 
 export type BoardColumns = {
   first: number[];
@@ -8,27 +8,29 @@ export type BoardColumns = {
 };
 
 export type GameBoard = {
-  ownerId: PlayerData["id"];
+  ownerId: PlayerData['id'];
   columns: BoardColumns;
+  score: number;
 };
 
 export interface GameData {
   id: UUID;
   players: PlayerData[];
-  turn: PlayerData["id"];
+  turn: PlayerData['id'];
+  winner: PlayerData['id'] | null;
   status: GameStatus;
   boards: GameBoard[];
-  nextRoll: number;
+  nextRoll: number | null;
 }
 
-export type GameStatus = "playing" | "ended";
+export type GameStatus = 'playing' | 'ended';
 
 export type CreateGameRequest = {
-  firstPlayerId: PlayerData["id"];
-  secondPlayerId: PlayerData["id"];
+  firstPlayerId: PlayerData['id'];
+  secondPlayerId: PlayerData['id'];
 };
 
 export type MakeTurnRequest = {
-  playerId: PlayerData["id"];
+  playerId: PlayerData['id'];
   column: keyof BoardColumns;
 };

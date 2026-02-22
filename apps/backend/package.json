@@ -10,7 +10,7 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "bun prepare:dev && nest start --watch",
+    "start:dev": "bun prepare:dev && NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "bun dist/main.js",
     "migration": "bun --bun typeorm-ts-node-esm migration:generate -d ./src/constants/DataSource.ts ./src/migrations/AutoMigration"
