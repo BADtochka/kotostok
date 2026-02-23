@@ -10,6 +10,7 @@ export const ToDo = () => {
     },
     {
       description: 'Кнопка сыграть еще раз',
+      done: true,
     },
     {
       description: 'Завершить игру',
@@ -27,7 +28,7 @@ export const ToDo = () => {
   ];
 
   return (
-    <div className='whitespace-pre-wrap flex flex-col gap-2'>
+    <div className='whitespace-pre-wrap flex flex-col gap-2 max-md:hidden'>
       <p>TODO LIST:</p>
       <code>{todo.map((item) => `${item.done ? '✅' : '⌛'} ${item.description}\n`)}</code>
     </div>

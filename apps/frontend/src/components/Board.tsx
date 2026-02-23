@@ -1,6 +1,6 @@
 import { gameAtom } from '@/atoms/game';
 import { playerAtom } from '@/atoms/player';
-import { useSocket } from '@/hooks/useSocket';
+import { useSocketEvent } from '@/hooks/useSocketEvent';
 import { useMakeTurn } from '@/services/game';
 import { loadSound } from '@/utils/audio';
 import type { BoardColumns, GameBoard, GameData, PlayerData } from '@shared';
@@ -25,10 +25,10 @@ export const Board = ({ board, player, nextRoll, turn }: BoardProps) => {
   const [loggedPlayer] = useAtom(playerAtom);
   const [_, setGame] = useAtom(gameAtom);
   const [score, setScore] = useState(0);
-  const [isJoined, setIsJoined] = useState(false);
 
   const { mutateAsync: makeTurn } = useMakeTurn(roomId);
-  const { data: updatedGame, isConnected, socket } = useSocket<GameData>('gameUpdated');
+  // const { data: updatedGame, isConnected, socket } = useSocket<GameData>('gameUpdated');
+  useSocketEvent<GameData>('gameUpdated', setGame);
 
   const allColumns = getObjectKeys(board.columns);
   const spring = useSpring(score, {
@@ -66,17 +66,6 @@ export const Board = ({ board, player, nextRoll, turn }: BoardProps) => {
 
     await makeTurn({ column: key, playerId: loggedPlayer.id });
   };
-
-  useEffect(() => {
-    if (!isConnected || isJoined) return;
-    socket.emit('join', { roomId });
-    setIsJoined(true);
-  }, [isConnected]);
-
-  useEffect(() => {
-    if (!updatedGame) return;
-    setGame(updatedGame);
-  }, [updatedGame]);
 
   if (!loggedPlayer) return;
 
@@ -120,6 +109,7 @@ export const Board = ({ board, player, nextRoll, turn }: BoardProps) => {
                     value={value}
                     index={index}
                     combos={diceCombo(key, value)}
+                    animate
                   />
                 ))}
               </AnimatePresence>
@@ -128,46 +118,19 @@ export const Board = ({ board, player, nextRoll, turn }: BoardProps) => {
         </div>
         <div className='flex gap-2 opacity-100'>
           <Column>
-            <Dice
-              color='#09090b'
-              animate={false}
-            />
-            <Dice
-              color='#09090b'
-              animate={false}
-            />
-            <Dice
-              color='#09090b'
-              animate={false}
-            />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
           </Column>
           <Column>
-            <Dice
-              color='#09090b'
-              animate={false}
-            />
-            <Dice
-              color='#09090b'
-              animate={false}
-            />
-            <Dice
-              color='#09090b'
-              animate={false}
-            />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
           </Column>
           <Column>
-            <Dice
-              color='#09090b'
-              animate={false}
-            />
-            <Dice
-              color='#09090b'
-              animate={false}
-            />
-            <Dice
-              color='#09090b'
-              animate={false}
-            />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
           </Column>
         </div>
       </div>
