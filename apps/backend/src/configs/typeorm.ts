@@ -13,3 +13,5 @@ export const TYPEORM_CONFIG: TypeOrmModuleOptions = {
   autoLoadEntities: true,
   logging: isDev,
 };
+
+console.log(isDev);
