@@ -7,4 +7,6 @@ export const AppConfigSchema = z.object({
   POSTGRES_PASSWORD: z.string(),
   POSTGRES_DB: z.string(),
   FRONTEND_URL: z.url(),
+  HTTP_PORT: z.number().default(3000),
+  SOCKET_PORT: z.number().default(3001),
 });

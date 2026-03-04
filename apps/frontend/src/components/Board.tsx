@@ -1,56 +1,44 @@
-import { gameAtom } from "@/atoms/game";
-import { playerAtom } from "@/atoms/player";
-import { useSocket } from "@/hooks/useSocket";
-import { useMakeTurn } from "@/services/game";
-import { loadSound, playSound } from "@/utils/audio";
-import type { BoardColumns, GameBoard, GameData, PlayerData } from "@shared";
-import { useParams } from "@tanstack/react-router";
-import { cn, getObjectKeys } from "badlib";
-import {
-    AnimatePresence,
-    motion,
-    useSpring,
-    useTransform,
-} from "framer-motion";
-import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
-import { Column } from "./Column";
-import { Dice } from "./Dice";
+import { gameAtom } from '@/atoms/game';
+import { playerAtom } from '@/atoms/player';
+import { useSocketEvent } from '@/hooks/useSocketEvent';
+import { useMakeTurn } from '@/services/game';
+import { loadSound } from '@/utils/audio';
+import type { BoardColumns, GameBoard, GameData, PlayerData } from '@shared';
+import { useParams } from '@tanstack/react-router';
+import { cn, getObjectKeys } from 'badlib';
+import { AnimatePresence, motion, useSpring, useTransform } from 'framer-motion';
+import { useAtom } from 'jotai';
+import { useEffect, useState } from 'react';
+import { Column } from './Column';
+import { Dice } from './Dice';
 
 type BoardProps = {
   board: GameBoard;
   player: PlayerData;
-  turn: PlayerData["id"];
-  nextRoll: number;
+  turn: PlayerData['id'];
+  nextRoll: number | null;
 };
 
 export const Board = ({ board, player, nextRoll, turn }: BoardProps) => {
   // const queryClient = useQueryClient();
-  const { roomId } = useParams({ from: "/room/$roomId" });
+  const { roomId } = useParams({ from: '/room/_guard/$roomId' });
   const [loggedPlayer] = useAtom(playerAtom);
   const [_, setGame] = useAtom(gameAtom);
-  const [totalDice, setTotalDice] = useState(0);
-  const [isJoined, setIsJoined] = useState(false);
+  const [score, setScore] = useState(0);
 
   const { mutateAsync: makeTurn } = useMakeTurn(roomId);
-  const {
-    data: updatedGame,
-    isConnected,
-    socket,
-  } = useSocket<GameData>("gameUpdated");
+  // const { data: updatedGame, isConnected, socket } = useSocket<GameData>('gameUpdated');
+  useSocketEvent<GameData>('gameUpdated', setGame);
 
   const allColumns = getObjectKeys(board.columns);
-  const spring = useSpring(totalDice, {
+  const spring = useSpring(score, {
     mass: 0.8,
     stiffness: 75,
     damping: 15,
   });
-  const animatedTotalDice = useTransform(() =>
-    Math.round(spring.get()).toLocaleString(),
-  );
+  const animatedScore = useTransform(() => Math.round(spring.get()).toLocaleString());
 
-  const isColumnAvailable = (key: keyof BoardColumns) =>
-    board.columns[key].length < 3;
+  const isColumnAvailable = (key: keyof BoardColumns) => board.columns[key].length < 3;
 
   const diceCombo = (key: keyof BoardColumns, value: number) => {
     const numbers = board.columns[key];
@@ -60,69 +48,54 @@ export const Board = ({ board, player, nextRoll, turn }: BoardProps) => {
 
   useEffect(() => {
     (async () => {
-      await loadSound("makeTurn");
-      await loadSound("wipeDice");
+      await loadSound('makeTurn');
+      await loadSound('wipeDice');
     })();
   }, []);
 
   useEffect(() => {
-    const numbers = allColumns.flatMap((key) =>
-      board.columns[key].flatMap((value) => value),
-    );
-    setTotalDice(numbers.reduce((acc, value) => acc + value, 0));
+    setScore(board.score);
   }, [board]);
 
   useEffect(() => {
-    spring.set(totalDice);
-  }, [totalDice]);
+    spring.set(score);
+  }, [score]);
 
   const onColumnClick = async (key: keyof BoardColumns) => {
     if (!isColumnAvailable(key) || !loggedPlayer) return;
-    playSound("makeTurn", {
-      playbackRate: Math.floor(Math.random() * 1) + 0.7,
-    });
+
     await makeTurn({ column: key, playerId: loggedPlayer.id });
-    // queryClient.invalidateQueries({ queryKey: ["game", roomId] });
   };
-
-  useEffect(() => {
-    if (!isConnected || isJoined) return;
-    socket.emit("join", { roomId });
-    setIsJoined(true);
-  }, [isConnected]);
-
-  useEffect(() => {
-    if (!updatedGame) return;
-    setGame(updatedGame);
-  }, [updatedGame]);
 
   if (!loggedPlayer) return;
 
   return (
     <div
-      className={cn("flex gap-4 items-center relative", {
-        "pointer-events-none":
-          turn !== loggedPlayer.id || player.id !== loggedPlayer.id,
+      className={cn('flex gap-4 items-center relative', {
+        'pointer-events-none': turn !== loggedPlayer.id || player.id !== loggedPlayer.id,
       })}
     >
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col items-center gap-2">
-          <img src={player.avatarUrl} className="size-16 rounded-full mr-2" />
+      <div className='flex flex-col gap-4'>
+        <div className='flex flex-col items-center gap-2'>
+          <img
+            src={player.avatarUrl}
+            className='size-16 rounded-full mr-2'
+          />
           <p>{player.displayName}</p>
-          <div
-            className={cn("opacity-0 transition-all", {
-              "opacity-100": turn === player.id,
-            })}
-          >
-            <Dice value={nextRoll} />
-          </div>
+          {nextRoll && (
+            <div
+              className={cn('opacity-0 transition-all', {
+                'opacity-100': turn === player.id,
+              })}
+            >
+              <Dice value={nextRoll} />
+            </div>
+          )}
         </div>
-        <motion.p className="text-2xl absolute top-1/2 -right-12 -translate-y-1/2">
-          {animatedTotalDice}
-        </motion.p>
+        <motion.p className='text-2xl absolute top-1/2 -right-12 -translate-y-1/2'>{animatedScore}</motion.p>
       </div>
-      <div className="flex bg-zinc-900 relative gap-2 p-2 text-xl">
-        <div className="flex gap-2 opacity-100 z-10 absolute p-2 top-0 left-0 h-full">
+      <div className='flex bg-zinc-900 relative gap-2 p-2 text-xl'>
+        <div className='flex gap-2 opacity-100 z-10 absolute p-2 top-0 left-0 h-full'>
           {allColumns.map((key) => (
             <Column
               key={key}
@@ -136,27 +109,28 @@ export const Board = ({ board, player, nextRoll, turn }: BoardProps) => {
                     value={value}
                     index={index}
                     combos={diceCombo(key, value)}
+                    animate
                   />
                 ))}
               </AnimatePresence>
             </Column>
           ))}
         </div>
-        <div className="flex gap-2 opacity-100">
+        <div className='flex gap-2 opacity-100'>
           <Column>
-            <Dice color="#09090b" animate={false} />
-            <Dice color="#09090b" animate={false} />
-            <Dice color="#09090b" animate={false} />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
           </Column>
           <Column>
-            <Dice color="#09090b" animate={false} />
-            <Dice color="#09090b" animate={false} />
-            <Dice color="#09090b" animate={false} />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
           </Column>
           <Column>
-            <Dice color="#09090b" animate={false} />
-            <Dice color="#09090b" animate={false} />
-            <Dice color="#09090b" animate={false} />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
+            <Dice color='#09090b' />
           </Column>
         </div>
       </div>

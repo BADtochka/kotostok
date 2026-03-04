@@ -1,7 +1,7 @@
 import { AppConfigSchema } from '@/constants/AppConfigSchema';
 import z from 'zod';
 
-export const APP_CONFIG: z.infer<typeof AppConfigSchema> = {
+export const APP_CONFIG: z.input<typeof AppConfigSchema> = {
   POSTGRES_DB: '...',
   POSTGRES_USER: '...',
   POSTGRES_PASSWORD: '...',

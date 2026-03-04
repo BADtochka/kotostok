@@ -4,8 +4,8 @@ const buffers = new Map();
 type AudioName = keyof typeof AUDIO;
 
 export const AUDIO = {
-  makeTurn: "turn.mp3",
-  wipeDice: "wipeDice.mp3",
+  makeTurn: 'turn.mp3',
+  wipeDice: 'wipeDice.mp3',
 };
 
 const getCtx = () => (ctx ??= new window.AudioContext());
@@ -17,10 +17,7 @@ export const loadSound = async (name: AudioName) => {
   buffers.set(name, buf);
 };
 
-export const playSound = (
-  name: AudioName,
-  { volume = 0.3, playbackRate = 1 } = {},
-) => {
+export const playSound = (name: AudioName, { volume = 0.1, playbackRate = 1 } = {}) => {
   const audioCtx = getCtx();
   const buf = buffers.get(name);
   if (!buf) return;
@@ -38,5 +35,5 @@ export const playSound = (
 
 export const unlockAudio = async () => {
   const audioCtx = getCtx();
-  if (audioCtx.state === "suspended") await audioCtx.resume();
+  if (audioCtx.state === 'suspended') await audioCtx.resume();
 };

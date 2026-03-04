@@ -1,20 +1,12 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
-import {
-  HeadContent,
-  Scripts,
-  createRootRouteWithContext,
-} from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { HeadContent, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
 
-import TanStackQueryProvider from "../integrations/tanstack-query/root-provider";
+import appCss from '../styles.css?url';
 
-import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
-
-import appCss from "../styles.css?url";
-
-import { Header } from "@/components/Header";
-import type { QueryClient } from "@tanstack/react-query";
-import { Provider } from "jotai";
+import { Header } from '@/components/Header';
+import { SocketProvider } from '@/components/SocketProvider';
+import TanStackQueryProvider from '@/integrations/tanstack-query/root-provider';
+import type { QueryClient } from '@tanstack/react-query';
+import { Provider as JotaiProvider } from 'jotai';
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -24,19 +16,19 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: "utf-8",
+        charSet: 'utf-8',
       },
       {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1',
       },
       {
-        title: "TanStack Start Starter",
+        title: 'TanStack Start Starter',
       },
     ],
     links: [
       {
-        rel: "stylesheet",
+        rel: 'stylesheet',
         href: appCss,
       },
     ],
@@ -48,33 +40,35 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <Provider>
-      <html lang="en">
-        <head>
-          <HeadContent />
-        </head>
-        <body>
-          <TanStackQueryProvider>
-            <div className="flex flex-col items-center justify-center h-full">
-              <Header />
-              {children}
-            </div>
-            <TanStackDevtools
-              config={{
-                position: "bottom-right",
-              }}
-              plugins={[
-                {
-                  name: "Tanstack Router",
-                  render: <TanStackRouterDevtoolsPanel />,
-                },
-                TanStackQueryDevtools,
-              ]}
-            />
-          </TanStackQueryProvider>
-          <Scripts />
-        </body>
-      </html>
-    </Provider>
+    <JotaiProvider>
+      <TanStackQueryProvider>
+        <SocketProvider
+          url={import.meta.env.VITE_WS_URL}
+          options={{
+            autoConnect: true,
+            timeout: 5000,
+            upgrade: true,
+            reconnection: true,
+            tryAllTransports: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000,
+            transports: ['websocket', 'polling'],
+          }}
+        >
+          <html lang='en'>
+            <head>
+              <HeadContent />
+            </head>
+            <body>
+              <div className='flex flex-col items-center justify-center h-full p-4'>
+                <Header />
+                {children}
+              </div>
+              <Scripts />
+            </body>
+          </html>
+        </SocketProvider>
+      </TanStackQueryProvider>
+    </JotaiProvider>
   );
 }

@@ -1,26 +1,13 @@
-// hooks/useSocket.ts
-import { socket } from "@/utils/socket";
-import { useEffect, useState } from "react";
+import { SocketContext } from '@/components/SocketProvider';
+import type { SocketContextValue } from '@/type/Socket';
+import { useContext } from 'react';
 
-export const useSocket = <T>(event: string) => {
-  const [data, setData] = useState<T | null>(null);
-  const [isConnected, setIsConnected] = useState(socket.connected);
+export const useSocket = (): SocketContextValue => {
+  const ctx = useContext(SocketContext);
 
-  useEffect(() => {
-    const onConnect = () => setIsConnected(true);
-    const onDisconnect = () => setIsConnected(false);
-    const onEvent = (payload: T) => setData(payload);
+  if (!ctx) {
+    throw new Error('useSocket must be used within <SocketProvider>');
+  }
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on(event, onEvent);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off(event, onEvent);
-    };
-  }, [event]);
-
-  return { data, isConnected, socket };
+  return ctx;
 };

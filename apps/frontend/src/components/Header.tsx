@@ -1,7 +1,8 @@
-import { playerAtom } from "@/atoms/player";
-import { useNavigate } from "@tanstack/react-router";
-import { useAtom } from "jotai";
-import { Button } from "./Button";
+import { playerAtom } from '@/atoms/player';
+import { useNavigate } from '@tanstack/react-router';
+import { useAtom } from 'jotai';
+import { Button } from './Button';
+import { ToDo } from './ToDo';
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -9,22 +10,25 @@ export const Header = () => {
 
   const onLogout = () => {
     setPlayer(null);
-    navigate({ to: "/" });
+    navigate({ to: '/' });
   };
 
-  if (!player) return <div className="h-14" />;
+  // if (!player) return <div className='h-14' />;
 
   return (
-    <div className="flex gap-2 h-14 px-2 w-full items-center justify-end fixed top-0 left-0">
+    <div className='flex gap-2 w-[calc(100%-16px*2)] items-start fixed top-4 left-4'>
+      <ToDo />
       {player?.avatarUrl && (
-        <img
-          src={player.avatarUrl}
-          className="size-10 rounded-full"
-          alt="avatar"
-        />
+        <div className='items-center flex shrink-0 gap-2 ml-auto'>
+          <img
+            src={player.avatarUrl}
+            className='size-10 rounded-full'
+            alt='avatar'
+          />
+          <p>{player?.displayName}</p>
+          <Button onClick={onLogout}>Выйти</Button>
+        </div>
       )}
-      <p>{player.displayName}</p>
-      <Button onClick={onLogout}>Выйти</Button>
     </div>
   );
 };

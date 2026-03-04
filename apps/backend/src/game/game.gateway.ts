@@ -1,3 +1,5 @@
+import { APP_CONFIG } from '@/configs/app';
+import { isDev } from '@/constants/isDev';
 import {
   ConnectedSocket,
   MessageBody,
@@ -8,10 +10,10 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Game } from './entities/game.entity';
 
-@WebSocketGateway(80, {
+@WebSocketGateway(APP_CONFIG.SOCKET_PORT, {
   cors: {
     credentials: true,
-    origin: '*',
+    origin: isDev ? '*' : APP_CONFIG.FRONTEND_URL,
   },
 })
 export class GameGateway {
