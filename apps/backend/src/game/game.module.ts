@@ -4,9 +4,10 @@ import { Game } from './entities/game.entity';
 import { GameController } from './game.controller';
 import { GameGateway } from './game.gateway';
 import { GameService } from './game.service';
+import { Player } from '@/player/entities/player.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Game])],
+  imports: [TypeOrmModule.forFeature([Game, Player])],
   controllers: [GameController],
   providers: [GameService, GameGateway],
 })
