@@ -147,6 +147,7 @@ export class GameService {
   }
 
   async getGameById(id: string): Promise<Game> {
+    console.log('getGameById', id)
     const game = await this.gameRepo.findOne({
       where: { id },
       relations: ['players'],
