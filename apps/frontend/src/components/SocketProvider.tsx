@@ -1,6 +1,22 @@
-import type { DisconnectInfo, SocketContextValue, SocketStatus } from '@/type/Socket';
-import { createContext, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { io, type ManagerOptions, type Socket, type SocketOptions } from 'socket.io-client';
+import type {
+  DisconnectInfo,
+  SocketContextValue,
+  SocketStatus,
+} from "@/type/Socket";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import {
+  io,
+  type ManagerOptions,
+  type Socket,
+  type SocketOptions,
+} from "socket.io-client";
 
 export interface SocketProviderProps {
   url: string;
@@ -10,13 +26,19 @@ export interface SocketProviderProps {
 
 export const SocketContext = createContext<SocketContextValue | null>(null);
 
-export const SocketProvider = ({ url, options, children }: SocketProviderProps) => {
+export const SocketProvider = ({
+  url,
+  options,
+  children,
+}: SocketProviderProps) => {
   const socketRef = useRef<Socket | null>(null);
 
-  const [status, setStatus] = useState<SocketStatus>('idle');
+  const [status, setStatus] = useState<SocketStatus>("idle");
   const [reconnectAttempts, setReconnectAttempts] = useState(0);
   const [lastError, setLastError] = useState<Error | null>(null);
-  const [lastDisconnect, setLastDisconnect] = useState<DisconnectInfo | null>(null);
+  const [lastDisconnect, setLastDisconnect] = useState<DisconnectInfo | null>(
+    null,
+  );
 
   useEffect(() => {
     const socket = io(url, {
@@ -29,10 +51,10 @@ export const SocketProvider = ({ url, options, children }: SocketProviderProps) 
     });
 
     socketRef.current = socket;
-    setStatus('connecting');
+    setStatus("connecting");
 
     const onConnect = () => {
-      setStatus('connected');
+      setStatus("connected");
       setReconnectAttempts(0);
       setLastError(null);
     };
@@ -41,20 +63,20 @@ export const SocketProvider = ({ url, options, children }: SocketProviderProps) 
       setLastDisconnect({ reason, at: new Date() });
 
       // При "io server disconnect" socket.io не реконнектится автоматически
-      if (reason === 'io server disconnect') {
-        setStatus('disconnected');
+      if (reason === "io server disconnect") {
+        setStatus("disconnected");
       } else {
-        setStatus('reconnecting');
+        setStatus("reconnecting");
       }
     };
 
     const onConnectError = (error: Error) => {
       setLastError(error);
-      setStatus('reconnecting');
+      setStatus("reconnecting");
     };
 
     const onReconnectAttempt = (attempt: number) => {
-      setStatus('reconnecting');
+      setStatus("reconnecting");
       setReconnectAttempts(attempt);
     };
 
@@ -63,31 +85,31 @@ export const SocketProvider = ({ url, options, children }: SocketProviderProps) 
     };
 
     const onReconnectFailed = () => {
-      setStatus('failed');
+      setStatus("failed");
     };
 
     const onReconnect = () => {
-      setStatus('connected');
+      setStatus("connected");
       setReconnectAttempts(0);
       setLastError(null);
     };
 
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('connect_error', onConnectError);
-    socket.io.on('reconnect_attempt', onReconnectAttempt);
-    socket.io.on('reconnect_error', onReconnectError);
-    socket.io.on('reconnect_failed', onReconnectFailed);
-    socket.io.on('reconnect', onReconnect);
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("connect_error", onConnectError);
+    socket.io.on("reconnect_attempt", onReconnectAttempt);
+    socket.io.on("reconnect_error", onReconnectError);
+    socket.io.on("reconnect_failed", onReconnectFailed);
+    socket.io.on("reconnect", onReconnect);
 
     return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('connect_error', onConnectError);
-      socket.io.off('reconnect_attempt', onReconnectAttempt);
-      socket.io.off('reconnect_error', onReconnectError);
-      socket.io.off('reconnect_failed', onReconnectFailed);
-      socket.io.off('reconnect', onReconnect);
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("connect_error", onConnectError);
+      socket.io.off("reconnect_attempt", onReconnectAttempt);
+      socket.io.off("reconnect_error", onReconnectError);
+      socket.io.off("reconnect_failed", onReconnectFailed);
+      socket.io.off("reconnect", onReconnect);
       socket.disconnect();
       socketRef.current = null;
     };
@@ -99,14 +121,14 @@ export const SocketProvider = ({ url, options, children }: SocketProviderProps) 
     if (!socket) return;
     setReconnectAttempts(0);
     setLastError(null);
-    setStatus('connecting');
+    setStatus("connecting");
     socket.connect();
   }, []);
 
   const disconnect = useCallback(() => {
     const socket = socketRef.current;
     if (!socket) return;
-    setStatus('disconnected');
+    setStatus("disconnected");
     socket.disconnect();
   }, []);
 
@@ -120,5 +142,7 @@ export const SocketProvider = ({ url, options, children }: SocketProviderProps) 
     disconnect,
   };
 
-  return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
+  return (
+    <SocketContext.Provider value={value}>{children}</SocketContext.Provider>
+  );
 };

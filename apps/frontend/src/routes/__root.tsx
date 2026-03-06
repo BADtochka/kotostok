@@ -1,12 +1,16 @@
-import { HeadContent, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
+import {
+  HeadContent,
+  Scripts,
+  createRootRouteWithContext,
+} from "@tanstack/react-router";
 
-import appCss from '../styles.css?url';
+import appCss from "../styles.css?url";
 
-import { Header } from '@/components/Header';
-import { SocketProvider } from '@/components/SocketProvider';
-import TanStackQueryProvider from '@/integrations/tanstack-query/root-provider';
-import type { QueryClient } from '@tanstack/react-query';
-import { Provider as JotaiProvider } from 'jotai';
+import { Header } from "@/components/Header";
+import { SocketProvider } from "@/components/SocketProvider";
+import TanStackQueryProvider from "@/integrations/tanstack-query/root-provider";
+import type { QueryClient } from "@tanstack/react-query";
+import { Provider as JotaiProvider } from "jotai";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -16,19 +20,19 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: 'utf-8',
+        charSet: "utf-8",
       },
       {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
       },
       {
-        title: 'TanStack Start Starter',
+        title: "TanStack Start Starter",
       },
     ],
     links: [
       {
-        rel: 'stylesheet',
+        rel: "stylesheet",
         href: appCss,
       },
     ],
@@ -52,15 +56,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             tryAllTransports: true,
             reconnectionAttempts: 5,
             reconnectionDelay: 1000,
-            transports: ['websocket', 'polling'],
+            transports: ["websocket", "polling"],
           }}
         >
-          <html lang='en'>
+          <html lang="en">
             <head>
               <HeadContent />
             </head>
             <body>
-              <div className='flex flex-col items-center justify-center h-full p-4'>
+              <div className="flex flex-col items-center justify-center h-full p-4">
                 <Header />
                 {children}
               </div>

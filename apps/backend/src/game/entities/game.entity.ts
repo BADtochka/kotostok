@@ -1,12 +1,12 @@
 import { Player } from '@/player/entities/player.entity';
 import type { GameBoard, GameData, GameStatus, UUID } from '@shared';
 import {
-    Column,
-    Entity,
-    JoinTable,
-    ManyToMany,
-    PrimaryGeneratedColumn,
-    type Relation,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  type Relation,
 } from 'typeorm';
 
 @Entity()

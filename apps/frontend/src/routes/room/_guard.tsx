@@ -1,9 +1,9 @@
-import { playerAtom } from '@/atoms/player';
-import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router';
-import { useAtom } from 'jotai';
-import { useEffect } from 'react';
+import { playerAtom } from "@/atoms/player";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { useAtom } from "jotai";
+import { useEffect } from "react";
 
-export const Route = createFileRoute('/room/_guard')({
+export const Route = createFileRoute("/room/_guard")({
   component: RouteComponent,
 });
 
@@ -12,10 +12,8 @@ function RouteComponent() {
   const [player] = useAtom(playerAtom);
 
   useEffect(() => {
-    console.log(player);
-
-    if (!player) navigate({ to: '/' });
-  }, []);
+    if (!player) navigate({ to: "/" });
+  }, [player]);
 
   return <Outlet />;
 }

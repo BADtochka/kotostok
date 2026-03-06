@@ -1,6 +1,12 @@
-import type { Socket } from 'socket.io-client';
+import type { Socket } from "socket.io-client";
 
-export type SocketStatus = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'reconnecting' | 'failed';
+export type SocketStatus =
+  | "idle"
+  | "connecting"
+  | "connected"
+  | "disconnected"
+  | "reconnecting"
+  | "failed";
 
 export interface DisconnectInfo {
   reason: string;

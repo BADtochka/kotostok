@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { useSocket } from './useSocket';
+import { useEffect, useRef } from "react";
+import { useSocket } from "./useSocket";
 
 /**
  * Подписывается на событие сокета и автоматически отписывается при анмаунте.
@@ -10,7 +10,10 @@ import { useSocket } from './useSocket';
  *   console.log(data.text);
  * });
  */
-export const useSocketEvent = <T = unknown>(event: string, handler: (data: T) => void): void => {
+export const useSocketEvent = <T = unknown>(
+  event: string,
+  handler: (data: T) => void,
+): void => {
   const { socket } = useSocket();
 
   const handlerRef = useRef(handler);
