@@ -6,10 +6,11 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prepare:dev": "bun ./src/utils/prepareEnv && docker compose up -d db",
+    "prepare:dev": "bun ./src/utils/prepareEnv && bun start:db",
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
+    "start:db": "docker compose up -d db",
     "start:dev": "bun prepare:dev && NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "bun dist/main.js",
