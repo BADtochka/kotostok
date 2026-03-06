@@ -1,4 +1,4 @@
 import type { GameData } from "@shared";
-import { atomWithStorage } from "jotai/utils";
+import { atom } from "jotai";
 
-export const gameAtom = atomWithStorage<GameData | null>("game", null);
+export const gameAtom = atom<GameData | null>(null);

@@ -44,7 +44,6 @@ export const playSound = (
 
   const master = getMaster();
 
-  // Gain на уровне источника — не трогает мастер
   const gainNode = audioCtx.createGain();
   gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
   gainNode.connect(master);

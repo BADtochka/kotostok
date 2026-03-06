@@ -8,124 +8,124 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as RoomIndexRouteImport } from "./routes/room/index";
-import { Route as RoomGuardRouteImport } from "./routes/room/_guard";
-import { Route as RoomGuardRoomIdRouteImport } from "./routes/room/_guard.$roomId";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as RoomIndexRouteImport } from './routes/room/index'
+import { Route as RoomGuardRouteImport } from './routes/room/_guard'
+import { Route as RoomGuardRoomIdRouteImport } from './routes/room/_guard.$roomId'
 
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const RoomIndexRoute = RoomIndexRouteImport.update({
-  id: "/room/",
-  path: "/room/",
+  id: '/room/',
+  path: '/room/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const RoomGuardRoute = RoomGuardRouteImport.update({
-  id: "/room/_guard",
-  path: "/room",
+  id: '/room/_guard',
+  path: '/room',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const RoomGuardRoomIdRoute = RoomGuardRoomIdRouteImport.update({
-  id: "/$roomId",
-  path: "/$roomId",
+  id: '/$roomId',
+  path: '/$roomId',
   getParentRoute: () => RoomGuardRoute,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/room": typeof RoomGuardRouteWithChildren;
-  "/room/": typeof RoomIndexRoute;
-  "/room/$roomId": typeof RoomGuardRoomIdRoute;
+  '/': typeof IndexRoute
+  '/room': typeof RoomGuardRouteWithChildren
+  '/room/': typeof RoomIndexRoute
+  '/room/$roomId': typeof RoomGuardRoomIdRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/room": typeof RoomIndexRoute;
-  "/room/$roomId": typeof RoomGuardRoomIdRoute;
+  '/': typeof IndexRoute
+  '/room': typeof RoomIndexRoute
+  '/room/$roomId': typeof RoomGuardRoomIdRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/room/_guard": typeof RoomGuardRouteWithChildren;
-  "/room/": typeof RoomIndexRoute;
-  "/room/_guard/$roomId": typeof RoomGuardRoomIdRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/room/_guard': typeof RoomGuardRouteWithChildren
+  '/room/': typeof RoomIndexRoute
+  '/room/_guard/$roomId': typeof RoomGuardRoomIdRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/room" | "/room/" | "/room/$roomId";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/room" | "/room/$roomId";
-  id: "__root__" | "/" | "/room/_guard" | "/room/" | "/room/_guard/$roomId";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/room' | '/room/' | '/room/$roomId'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/room' | '/room/$roomId'
+  id: '__root__' | '/' | '/room/_guard' | '/room/' | '/room/_guard/$roomId'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  RoomGuardRoute: typeof RoomGuardRouteWithChildren;
-  RoomIndexRoute: typeof RoomIndexRoute;
+  IndexRoute: typeof IndexRoute
+  RoomGuardRoute: typeof RoomGuardRouteWithChildren
+  RoomIndexRoute: typeof RoomIndexRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/room/": {
-      id: "/room/";
-      path: "/room";
-      fullPath: "/room/";
-      preLoaderRoute: typeof RoomIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/room/_guard": {
-      id: "/room/_guard";
-      path: "/room";
-      fullPath: "/room";
-      preLoaderRoute: typeof RoomGuardRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/room/_guard/$roomId": {
-      id: "/room/_guard/$roomId";
-      path: "/$roomId";
-      fullPath: "/room/$roomId";
-      preLoaderRoute: typeof RoomGuardRoomIdRouteImport;
-      parentRoute: typeof RoomGuardRoute;
-    };
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/room/': {
+      id: '/room/'
+      path: '/room'
+      fullPath: '/room/'
+      preLoaderRoute: typeof RoomIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/room/_guard': {
+      id: '/room/_guard'
+      path: '/room'
+      fullPath: '/room'
+      preLoaderRoute: typeof RoomGuardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/room/_guard/$roomId': {
+      id: '/room/_guard/$roomId'
+      path: '/$roomId'
+      fullPath: '/room/$roomId'
+      preLoaderRoute: typeof RoomGuardRoomIdRouteImport
+      parentRoute: typeof RoomGuardRoute
+    }
   }
 }
 
 interface RoomGuardRouteChildren {
-  RoomGuardRoomIdRoute: typeof RoomGuardRoomIdRoute;
+  RoomGuardRoomIdRoute: typeof RoomGuardRoomIdRoute
 }
 
 const RoomGuardRouteChildren: RoomGuardRouteChildren = {
   RoomGuardRoomIdRoute: RoomGuardRoomIdRoute,
-};
+}
 
 const RoomGuardRouteWithChildren = RoomGuardRoute._addFileChildren(
   RoomGuardRouteChildren,
-);
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RoomGuardRoute: RoomGuardRouteWithChildren,
   RoomIndexRoute: RoomIndexRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from "./router.tsx";
-import type { createStart } from "@tanstack/react-start";
-declare module "@tanstack/react-start" {
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
   interface Register {
-    ssr: true;
-    router: Awaited<ReturnType<typeof getRouter>>;
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
   }
 }
