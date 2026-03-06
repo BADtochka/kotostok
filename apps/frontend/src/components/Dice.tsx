@@ -4,7 +4,7 @@ import { cn, delay } from 'badlib';
 import type { AnimationDefinition, Variants } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { useAtom } from 'jotai';
-import { forwardRef, useRef } from 'react';
+import { forwardRef, useCallback, useRef } from 'react';
 
 type DiceProps = {
   index?: number;
@@ -32,26 +32,23 @@ export const Dice = forwardRef<HTMLDivElement, DiceProps>(
       },
     };
 
-    const onAnimationStart = async (def: AnimationDefinition, needSound = true) => {
-      console.log('animationStart lockSound:', lockSound);
-      if (!needSound || lockSound) return;
-      if (!isMounted.current) {
-        isMounted.current = true;
-        return;
-      }
-
-      switch (def) {
-        case 'animate': {
-          playSound('makeTurn');
-          break;
+    const onAnimationStart = useCallback(
+      async (def: AnimationDefinition, needSound = true) => {
+        if (!needSound || lockSound) return;
+        switch (def) {
+          case 'animate': {
+            playSound('makeTurn');
+            break;
+          }
+          case 'exit': {
+            await delay(WIPE_DICE_DELAY_MS);
+            playSound('wipeDice');
+            break;
+          }
         }
-        case 'exit': {
-          await delay(WIPE_DICE_DELAY_MS);
-          playSound('wipeDice');
-          break;
-        }
-      }
-    };
+      },
+      [lockSound],
+    );
 
     return (
       <motion.div

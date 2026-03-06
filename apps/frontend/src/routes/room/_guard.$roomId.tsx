@@ -1,8 +1,10 @@
 import { gameAtom, lockSoundAtom } from '@/atoms/game';
+import { rulesModalAtom } from '@/atoms/modals';
 import { playerAtom } from '@/atoms/player';
 import { Board } from '@/components/Board';
 import { Button } from '@/components/Button';
 import { Menu } from '@/components/Menu';
+import { RulesModal } from '@/components/Rules';
 import { useSocket } from '@/hooks/useSocket';
 import { useSocketEvent } from '@/hooks/useSocketEvent';
 import { useCreateGame, useEndGame, useGetGame } from '@/services/game';
@@ -24,6 +26,7 @@ function RouteComponent() {
   const [player] = useAtom(playerAtom);
   const [_, setLockSound] = useAtom(lockSoundAtom);
   const [game, setGame] = useAtom(gameAtom);
+  const [__, setRulesModal] = useAtom(rulesModalAtom);
   const { data: gameData } = useGetGame(roomId);
   const { mutateAsync: endGame } = useEndGame(roomId);
   const { mutateAsync: recreateGame } = useCreateGame();
@@ -71,8 +74,7 @@ function RouteComponent() {
     <div className={cn('flex items-center justify-center h-full flex-col gap-4')}>
       {game?.status === 'ended' && (
         <p className='absolute -translate-1/2 top-1/2 left-1/2'>
-          Победил:
-          {game?.players?.find((player) => player.id === game.winner)?.displayName}
+          Победил: {game?.players?.find((player) => player.id === game.winner)?.displayName}
         </p>
       )}
       <div
@@ -95,9 +97,11 @@ function RouteComponent() {
             ))}
       </div>
       <Menu>
+        <Button onClick={() => setRulesModal(true)}>Как играть?</Button>
         {game?.status === 'ended' && <Button onClick={onGameRestart}>Сыграть ещё раз</Button>}
         {game?.status !== 'ended' && <Button onClick={onGameEnd}>Завершить игру</Button>}
       </Menu>
+      <RulesModal />
     </div>
   );
 }

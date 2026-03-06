@@ -1,9 +1,9 @@
 import { Player } from '@/player/entities/player.entity';
 import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import type { BoardColumns, GameBoard } from '@shared';
@@ -110,8 +110,6 @@ export class GameService {
     );
 
     playerBoard.columns[column].push(game.nextRoll!);
-    console.log('applyMove', playerBoard.columns);
-
     this.calculateScore(playerBoard);
     this.calculateScore(opponentBoard);
   }
@@ -136,18 +134,12 @@ export class GameService {
       game.turn = opponentId;
     }
 
-    console.log(
-      'finalGame',
-      game.boards.map((col) => col.columns),
-    );
-
     const updatedGame = await this.gameRepo.save(game);
     this.gameGateway.server.to(game.id).emit('gameUpdated', updatedGame);
     return updatedGame;
   }
 
   async getGameById(id: string): Promise<Game> {
-    console.log('getGameById', id);
     const game = await this.gameRepo.findOne({
       where: { id },
       relations: ['players'],
@@ -205,12 +197,6 @@ export class GameService {
     const { playerBoard, opponentBoard } = this.getBoards(game, playerId);
 
     await this.applyMove(game, playerBoard, opponentBoard, column);
-
-    console.log(
-      'afterApply',
-      game.boards.map((col) => col.columns),
-    );
-
     const finalizedGame = await this.finalizeGame(game, playerBoard);
     return finalizedGame;
   }
